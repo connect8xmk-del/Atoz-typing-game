@@ -1,0 +1,1579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>A-to-Z Typing Challenge</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0a0a0f;
+            --bg-card: rgba(20, 20, 35, 0.85);
+            --bg-glass: rgba(255, 255, 255, 0.05);
+            --accent: #00d4ff;
+            --accent-glow: rgba(0, 212, 255, 0.4);
+            --accent2: #7c3aed;
+            --success: #00e676;
+            --error: #ff1744;
+            --warning: #ff9100;
+            --text: #ffffff;
+            --text-dim: rgba(255,255,255,0.6);
+            --border: rgba(255,255,255,0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Animated Background */
+        .bg-animation {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            background: 
+                radial-gradient(ellipse at 20% 20%, rgba(0,212,255,0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(124,58,237,0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(0,0,0,0.9) 0%, #0a0a0f 100%);
+        }
+
+        .bg-animation::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: 
+                radial-gradient(circle at 20% 30%, rgba(0,212,255,0.03) 0%, transparent 2%),
+                radial-gradient(circle at 80% 70%, rgba(124,58,237,0.03) 0%, transparent 2%);
+            background-size: 100px 100px;
+            animation: bgMove 20s linear infinite;
+        }
+
+        @keyframes bgMove {
+            0% { transform: translate(0,0); }
+            100% { transform: translate(-50px,-50px); }
+        }
+
+        /* Screen Management */
+        .screen {
+            display: none;
+            width: 100%;
+            max-width: 480px;
+            padding: 20px;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Cards */
+        .card {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 28px;
+            margin-bottom: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+        }
+
+        .card-glow {
+            box-shadow: 0 0 40px var(--accent-glow), 0 8px 32px rgba(0,0,0,0.4);
+            border-color: rgba(0,212,255,0.2);
+        }
+
+        /* Typography */
+        .title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 900;
+            text-align: center;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--text-dim);
+            font-size: 0.95rem;
+            margin-bottom: 24px;
+        }
+
+        /* Buttons */
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 16px 24px;
+            border: none;
+            border-radius: 16px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            text-decoration: none;
+            margin-bottom: 12px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            color: white;
+            box-shadow: 0 4px 20px rgba(0,212,255,0.3);
+        }
+
+        .btn-primary:hover, .btn-primary:active {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 30px rgba(0,212,255,0.5);
+        }
+
+        .btn-secondary {
+            background: var(--bg-glass);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover, .btn-secondary:active {
+            background: rgba(255,255,255,0.1);
+            border-color: var(--accent);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #00e676, #00c853);
+            color: white;
+            box-shadow: 0 4px 20px rgba(0,230,118,0.3);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ff1744, #d50000);
+            color: white;
+            box-shadow: 0 4px 20px rgba(255,23,68,0.3);
+        }
+
+        .btn-small {
+            padding: 10px 18px;
+            font-size: 0.85rem;
+            width: auto;
+            display: inline-block;
+            margin: 4px;
+        }
+
+        .btn-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .btn-grid .btn {
+            margin-bottom: 0;
+            padding: 14px 8px;
+            font-size: 0.9rem;
+        }
+
+        .btn-grid .btn.selected {
+            border: 2px solid var(--accent);
+            box-shadow: 0 0 15px var(--accent-glow);
+        }
+
+        /* Input */
+        .input-field {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid var(--border);
+            border-radius: 16px;
+            background: var(--bg-glass);
+            color: var(--text);
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.1rem;
+            text-align: center;
+            outline: none;
+            transition: all 0.3s ease;
+            margin-bottom: 16px;
+        }
+
+        .input-field:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        .input-field::placeholder {
+            color: var(--text-dim);
+        }
+
+        /* Timer Display */
+        .timer-display {
+            font-family: 'Orbitron', monospace;
+            font-size: 3rem;
+            font-weight: 900;
+            text-align: center;
+            color: var(--accent);
+            text-shadow: 0 0 30px var(--accent-glow);
+            transition: color 0.3s ease;
+        }
+
+        .timer-display.warning {
+            color: var(--warning);
+            text-shadow: 0 0 30px rgba(255,145,0,0.5);
+            animation: pulse 0.5s ease infinite alternate;
+        }
+
+        .timer-display.danger {
+            color: var(--error);
+            text-shadow: 0 0 30px rgba(255,23,68,0.5);
+            animation: pulse 0.3s ease infinite alternate;
+        }
+
+        @keyframes pulse {
+            from { transform: scale(1); }
+            to { transform: scale(1.05); }
+        }
+
+        /* Letter Display */
+        .letter-display {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 8rem;
+            font-weight: 900;
+            text-align: center;
+            color: var(--text);
+            text-shadow: 0 0 60px var(--accent-glow);
+            margin: 20px 0;
+            min-height: 160px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .letter-display.correct {
+            color: var(--success);
+            text-shadow: 0 0 60px rgba(0,230,118,0.5);
+            animation: correctPop 0.4s ease;
+        }
+
+        .letter-display.wrong {
+            color: var(--error);
+            text-shadow: 0 0 60px rgba(255,23,68,0.5);
+            animation: wrongShake 0.4s ease;
+        }
+
+        @keyframes correctPop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes wrongShake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-15px); }
+            40% { transform: translateX(15px); }
+            60% { transform: translateX(-10px); }
+            80% { transform: translateX(10px); }
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            width: 100%;
+            height: 12px;
+            background: var(--bg-glass);
+            border-radius: 6px;
+            overflow: hidden;
+            margin: 16px 0;
+            border: 1px solid var(--border);
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), var(--accent2));
+            border-radius: 6px;
+            transition: width 0.3s ease;
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        /* Stats Row */
+        .stats-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .stat-box {
+            flex: 1;
+            background: var(--bg-glass);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 14px 8px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            margin-top: 4px;
+        }
+
+        /* Countdown */
+        .countdown-display {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 6rem;
+            font-weight: 900;
+            text-align: center;
+            color: var(--accent);
+            text-shadow: 0 0 50px var(--accent-glow);
+            animation: countdownPop 0.8s ease;
+        }
+
+        @keyframes countdownPop {
+            0% { transform: scale(2); opacity: 0; }
+            50% { transform: scale(0.9); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Result Stats */
+        .result-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin: 20px 0;
+        }
+
+        .result-item {
+            background: var(--bg-glass);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .result-item .value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .result-item .label {
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            margin-top: 4px;
+        }
+
+        /* Settings Toggle */
+        .setting-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .setting-row:last-child {
+            border-bottom: none;
+        }
+
+        .setting-label {
+            font-size: 0.95rem;
+        }
+
+        .toggle {
+            width: 52px;
+            height: 28px;
+            background: var(--bg-glass);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .toggle.active {
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            border-color: transparent;
+        }
+
+        .toggle::after {
+            content: '';
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            background: white;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        }
+
+        .toggle.active::after {
+            left: 26px;
+        }
+
+        /* Mobile Input */
+        .mobile-input-container {
+            position: relative;
+            margin: 16px 0;
+        }
+
+        .mobile-input {
+            width: 100%;
+            padding: 20px;
+            font-size: 1.5rem;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 8px;
+            background: var(--bg-glass);
+            border: 2px solid var(--border);
+            border-radius: 20px;
+            color: var(--text);
+            outline: none;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .mobile-input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 30px var(--accent-glow);
+        }
+
+        /* Message */
+        .message {
+            text-align: center;
+            padding: 12px;
+            border-radius: 12px;
+            margin: 12px 0;
+            font-size: 0.9rem;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .message.error {
+            background: rgba(255,23,68,0.15);
+            color: var(--error);
+            border: 1px solid rgba(255,23,68,0.3);
+        }
+
+        .message.success {
+            background: rgba(0,230,118,0.15);
+            color: var(--success);
+            border: 1px solid rgba(0,230,118,0.3);
+        }
+
+        /* Instagram Icon */
+        .insta-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            box-shadow: 0 8px 30px rgba(220,39,67,0.4);
+            animation: float 3s ease infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Particles */
+        .particle {
+            position: fixed;
+            pointer-events: none;
+            border-radius: 50%;
+            animation: particleFly 1s ease forwards;
+            z-index: 9999;
+        }
+
+        @keyframes particleFly {
+            0% { transform: translate(0,0) scale(1); opacity: 1; }
+            100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
+        }
+
+        /* Overlay */
+        .overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .overlay.active {
+            display: flex;
+        }
+
+        .overlay-content {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 32px;
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        /* Splash */
+        .splash-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 900;
+            text-align: center;
+            background: linear-gradient(135deg, var(--accent), var(--accent2), var(--accent));
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 3s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .splash-subtitle {
+            text-align: center;
+            color: var(--text-dim);
+            margin-top: 12px;
+            font-size: 1rem;
+        }
+
+        .splash-loader {
+            width: 60px;
+            height: 4px;
+            background: var(--bg-glass);
+            border-radius: 2px;
+            margin: 30px auto;
+            overflow: hidden;
+        }
+
+        .splash-loader-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--accent), var(--accent2));
+            border-radius: 2px;
+            animation: loadBar 2s ease forwards;
+        }
+
+        @keyframes loadBar {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+
+        /* Streak */
+        .streak-display {
+            text-align: center;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
+            color: var(--warning);
+            margin-top: 8px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .streak-display.active {
+            opacity: 1;
+        }
+
+        /* Nav Header */
+        .nav-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .nav-back {
+            background: var(--bg-glass);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 10px 16px;
+            color: var(--text);
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .nav-back:hover {
+            border-color: var(--accent);
+            background: rgba(0,212,255,0.1);
+        }
+
+        .nav-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        /* Hide scrollbar */
+        ::-webkit-scrollbar {
+            width: 0px;
+            background: transparent;
+        }
+
+        /* Responsive */
+        @media (max-width: 400px) {
+            .letter-display { font-size: 6rem; min-height: 120px; }
+            .timer-display { font-size: 2.5rem; }
+            .countdown-display { font-size: 5rem; }
+            .title { font-size: 1.5rem; }
+            .card { padding: 20px; }
+            .btn-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+
+        @media (min-width: 768px) {
+            .screen { max-width: 520px; }
+            .letter-display { font-size: 10rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-animation"></div>
+
+    <!-- ========== SCREENS ========== -->
+
+    <!-- 1. Splash Screen -->
+    <div id="screen-splash" class="screen active">
+        <div class="card card-glow" style="text-align:center; padding: 60px 28px;">
+            <div class="splash-title">A-Z</div>
+            <div class="splash-subtitle">TYPING CHALLENGE</div>
+            <div class="splash-loader"><div class="splash-loader-bar"></div></div>
+            <div style="color:var(--text-dim); font-size:0.85rem;">Loading...</div>
+        </div>
+    </div>
+
+    <!-- 2. Instagram Gate -->
+    <div id="screen-instagram" class="screen">
+        <div class="card" style="text-align:center;">
+            <div class="insta-icon">📷</div>
+            <div class="title" style="font-size:1.5rem;">Follow Me to Play</div>
+            <div class="subtitle">Follow my Instagram profile to unlock the game.</div>
+            <a href="https://www.instagram.com/mr_manish_.k" target="_blank" class="btn btn-primary" onclick="game.instagramOpened()">Follow on Instagram</a>
+            <button class="btn btn-success" onclick="game.instagramFollowed()">I Have Followed</button>
+            <div style="margin-top:16px; font-size:0.8rem; color:var(--text-dim);">@mr_manish_.k</div>
+        </div>
+    </div>
+
+    <!-- 3. Home Screen -->
+    <div id="screen-home" class="screen">
+        <div class="card card-glow" style="text-align:center; padding: 40px 28px;">
+            <div class="splash-title" style="font-size:2rem;">A-Z</div>
+            <div class="splash-subtitle" style="margin-bottom:30px;">TYPING CHALLENGE</div>
+            <button class="btn btn-primary" onclick="game.showScreen('setup')">▶ PLAY NOW</button>
+            <button class="btn btn-secondary" onclick="game.showScreen('stats')">📊 Statistics</button>
+            <button class="btn btn-secondary" onclick="game.showScreen('settings')">⚙ Settings</button>
+            <button class="btn btn-secondary" onclick="game.showScreen('about')">ℹ About</button>
+        </div>
+    </div>
+
+    <!-- 4. Setup Screen -->
+    <div id="screen-setup" class="screen">
+        <div class="nav-header">
+            <button class="nav-back" onclick="game.showScreen('home')">← Back</button>
+            <div class="nav-title">Game Setup</div>
+            <div style="width:60px;"></div>
+        </div>
+        <div class="card">
+            <div class="subtitle" style="margin-bottom:16px;">Select your time limit</div>
+            <div class="btn-grid" id="time-presets">
+                <button class="btn btn-secondary" data-time="10">10s</button>
+                <button class="btn btn-secondary selected" data-time="15">15s</button>
+                <button class="btn btn-secondary" data-time="30">30s</button>
+                <button class="btn btn-secondary" data-time="45">45s</button>
+                <button class="btn btn-secondary" data-time="60">60s</button>
+                <button class="btn btn-secondary" data-time="90">90s</button>
+                <button class="btn btn-secondary" data-time="120">120s</button>
+                <button class="btn btn-secondary" data-time="2">2s</button>
+                <button class="btn btn-secondary" data-time="5">5s</button>
+            </div>
+            <div style="text-align:center; color:var(--text-dim); margin-bottom:12px; font-size:0.85rem;">— OR —</div>
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:20px;">
+                <span style="color:var(--text-dim); white-space:nowrap;">Custom:</span>
+                <input type="number" id="custom-time" class="input-field" style="margin-bottom:0; flex:1;" placeholder="Enter seconds" min="1" max="999">
+                <span style="color:var(--text-dim); white-space:nowrap;">sec</span>
+            </div>
+            <button class="btn btn-primary" onclick="game.startCountdown()">START GAME</button>
+        </div>
+    </div>
+
+    <!-- 5. Countdown Screen -->
+    <div id="screen-countdown" class="screen">
+        <div style="min-height:70vh; display:flex; flex-direction:column; justify-content:center; align-items:center;">
+            <div class="countdown-display" id="countdown-number">3</div>
+            <div style="color:var(--text-dim); margin-top:20px; font-size:1.1rem;">Get Ready!</div>
+        </div>
+    </div>
+
+    <!-- 6. Game Screen -->
+    <div id="screen-game" class="screen">
+        <div class="stats-row">
+            <div class="stat-box">
+                <div class="stat-value" id="game-timer">00:00</div>
+                <div class="stat-label">TIME</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="game-progress">0/26</div>
+                <div class="stat-label">PROGRESS</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="game-score">0</div>
+                <div class="stat-label">SCORE</div>
+            </div>
+        </div>
+
+        <div class="progress-container">
+            <div class="progress-bar" id="progress-bar" style="width:0%"></div>
+        </div>
+
+        <div class="card card-glow" style="text-align:center; padding: 30px 20px;">
+            <div class="letter-display" id="current-letter">A</div>
+            <div style="color:var(--text-dim); font-size:1rem; margin-bottom:8px;">Type this letter</div>
+            <div class="streak-display" id="streak-display">🔥 Streak: 0</div>
+        </div>
+
+        <div class="mobile-input-container">
+            <input type="text" id="game-input" class="mobile-input" maxlength="1" placeholder="TYPE LETTER" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+        </div>
+
+        <div id="game-message" class="message" style="display:none;"></div>
+
+        <div style="display:flex; gap:10px;">
+            <button class="btn btn-secondary" style="flex:1;" onclick="game.pauseGame()">⏸ PAUSE</button>
+            <button class="btn btn-danger" style="flex:1;" onclick="game.confirmQuit()">✕ QUIT</button>
+        </div>
+    </div>
+
+    <!-- 7. Pause Overlay -->
+    <div id="overlay-pause" class="overlay">
+        <div class="overlay-content">
+            <div class="title" style="font-size:1.8rem; margin-bottom:8px;">⏸ PAUSED</div>
+            <div class="subtitle" style="margin-bottom:24px;">Game is paused</div>
+            <button class="btn btn-primary" onclick="game.resumeGame()">▶ RESUME</button>
+            <button class="btn btn-secondary" onclick="game.quitToHome()">🏠 QUIT TO HOME</button>
+        </div>
+    </div>
+
+    <!-- 8. Victory Screen -->
+    <div id="screen-victory" class="screen">
+        <div class="card card-glow" style="text-align:center; padding: 30px 24px;">
+            <div style="font-size:4rem; margin-bottom:8px;">🏆</div>
+            <div class="title" style="font-size:2rem;">YOU WIN!</div>
+            <div class="subtitle">Amazing typing skills!</div>
+
+            <div class="result-grid">
+                <div class="result-item">
+                    <div class="value" id="victory-time">0s</div>
+                    <div class="label">Time Used</div>
+                </div>
+                <div class="result-item">
+                    <div class="value" id="victory-remaining">0s</div>
+                    <div class="label">Time Left</div>
+                </div>
+                <div class="result-item">
+                    <div class="value" id="victory-score">0</div>
+                    <div class="label">Score</div>
+                </div>
+                <div class="result-item">
+                    <div class="value" id="victory-accuracy">0%</div>
+                    <div class="label">Accuracy</div>
+                </div>
+            </div>
+
+            <div id="best-badge" style="display:none; background:linear-gradient(135deg, #ffd700, #ff9100); color:#000; padding:10px 20px; border-radius:12px; font-weight:700; margin-bottom:16px; animation:fadeIn 0.5s ease;">
+                🎉 NEW PERSONAL BEST!
+            </div>
+
+            <button class="btn btn-primary" onclick="game.restartGame()">▶ PLAY AGAIN</button>
+            <button class="btn btn-secondary" onclick="game.showScreen('setup')">⚙ CHANGE TIME</button>
+            <button class="btn btn-secondary" onclick="game.shareResult()">📤 SHARE RESULT</button>
+        </div>
+
+        <div class="card" style="text-align:center;">
+            <div style="color:var(--text-dim); margin-bottom:12px;">Enjoyed the game?</div>
+            <div style="font-weight:600; margin-bottom:12px;">Follow me on Instagram</div>
+            <div style="font-size:1.2rem; color:var(--accent); margin-bottom:12px;">@mr_manish_.k</div>
+            <a href="https://www.instagram.com/mr_manish_.k" target="_blank" class="btn btn-primary" style="background:linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);">📷 FOLLOW ON INSTAGRAM</a>
+        </div>
+    </div>
+
+    <!-- 9. Game Over Screen -->
+    <div id="screen-gameover" class="screen">
+        <div class="card" style="text-align:center; padding: 30px 24px;">
+            <div style="font-size:4rem; margin-bottom:8px;">💀</div>
+            <div class="title" style="font-size:2rem; color:var(--error);">GAME OVER</div>
+            <div class="subtitle">Time ran out!</div>
+
+            <div class="result-grid">
+                <div class="result-item">
+                    <div class="value" id="go-progress">0/26</div>
+                    <div class="label">Progress</div>
+                </div>
+                <div class="result-item">
+                    <div class="value" id="go-score">0</div>
+                    <div class="label">Score</div>
+                </div>
+                <div class="result-item">
+                    <div class="value" id="go-accuracy">0%</div>
+                    <div class="label">Accuracy</div>
+                </div>
+                <div class="result-item">
+                    <div class="value" id="go-streak">0</div>
+                    <div class="label">Best Streak</div>
+                </div>
+            </div>
+
+            <button class="btn btn-primary" onclick="game.restartGame()">▶ TRY AGAIN</button>
+            <button class="btn btn-secondary" onclick="game.showScreen('setup')">⚙ CHANGE TIME</button>
+        </div>
+    </div>
+
+    <!-- 10. Statistics Screen -->
+    <div id="screen-stats" class="screen">
+        <div class="nav-header">
+            <button class="nav-back" onclick="game.showScreen('home')">← Back</button>
+            <div class="nav-title">Statistics</div>
+            <div style="width:60px;"></div>
+        </div>
+        <div class="card">
+            <div class="result-grid">
+                <div class="result-item">
+                    <div class="value" id="stat-played">0</div>
+                    <div class="label">Games Played</div>
+                </div>
+                <div class="result-item">
+                    <div class="value" id="stat-won">0</div>
+                    <div class="label">Games Won</div>
+                </div>
+                <div class="result-item">
+                    <div class="value" id="stat-lost">0</div>
+                    <div class="label">Games Lost</div>
+                </div>
+                <div class="result-item">
+                    <div class="value" id="stat-winrate">0%</div>
+                    <div class="label">Win Rate</div>
+                </div>
+                <div class="result-item">
+                    <div class="value" id="stat-best">0</div>
+                    <div class="label">Best Score</div>
+                </div>
+                <div class="result-item">
+                    <div class="value" id="stat-fastest">—</div>
+                    <div class="label">Fastest Time</div>
+                </div>
+                <div class="result-item">
+                    <div class="value" id="stat-accuracy">0%</div>
+                    <div class="label">Best Accuracy</div>
+                </div>
+                <div class="result-item">
+                    <div class="value" id="stat-avg">—</div>
+                    <div class="label">Avg Time</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 11. Settings Screen -->
+    <div id="screen-settings" class="screen">
+        <div class="nav-header">
+            <button class="nav-back" onclick="game.showScreen('home')">← Back</button>
+            <div class="nav-title">Settings</div>
+            <div style="width:60px;"></div>
+        </div>
+        <div class="card">
+            <div style="font-weight:600; margin-bottom:12px; color:var(--accent);">Game Settings</div>
+            <div class="setting-row">
+                <span class="setting-label">🔊 Sound Effects</span>
+                <div class="toggle" id="toggle-sound" onclick="game.toggleSetting('sound')"></div>
+            </div>
+            <div class="setting-row">
+                <span class="setting-label">📳 Vibration</span>
+                <div class="toggle" id="toggle-vibration" onclick="game.toggleSetting('vibration')"></div>
+            </div>
+            <div class="setting-row">
+                <span class="setting-label">🎯 Auto Focus</span>
+                <div class="toggle" id="toggle-autofocus" onclick="game.toggleSetting('autofocus')"></div>
+            </div>
+        </div>
+        <div class="card">
+            <div style="font-weight:600; margin-bottom:12px; color:var(--accent);">Data</div>
+            <button class="btn btn-danger btn-small" onclick="game.resetStats()">🗑 Reset Statistics</button>
+            <button class="btn btn-danger btn-small" onclick="game.resetAll()">🗑 Reset All Data</button>
+        </div>
+    </div>
+
+    <!-- 12. About Screen -->
+    <div id="screen-about" class="screen">
+        <div class="nav-header">
+            <button class="nav-back" onclick="game.showScreen('home')">← Back</button>
+            <div class="nav-title">About</div>
+            <div style="width:60px;"></div>
+        </div>
+        <div class="card" style="text-align:center;">
+            <div class="splash-title" style="font-size:2rem; margin-bottom:8px;">A-Z</div>
+            <div class="subtitle" style="margin-bottom:24px;">TYPING CHALLENGE</div>
+            <div style="color:var(--text-dim); margin-bottom:8px;">A fast and simple typing game.</div>
+            <div style="margin:20px 0;">
+                <div style="color:var(--text-dim); font-size:0.9rem;">Created by</div>
+                <div style="font-weight:700; font-size:1.2rem; margin-top:4px;">Manish Kumar</div>
+            </div>
+            <div style="margin:16px 0;">
+                <div style="color:var(--text-dim); font-size:0.9rem;">Instagram</div>
+                <div style="font-weight:600; color:var(--accent); margin-top:4px;">@mr_manish_.k</div>
+            </div>
+            <a href="https://www.instagram.com/mr_manish_.k" target="_blank" class="btn btn-primary" style="margin-top:16px; background:linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);">📷 FOLLOW ON INSTAGRAM</a>
+        </div>
+    </div>
+
+    <!-- Quit Confirmation Overlay -->
+    <div id="overlay-quit" class="overlay">
+        <div class="overlay-content">
+            <div class="title" style="font-size:1.5rem; margin-bottom:8px;">Are you sure?</div>
+            <div class="subtitle" style="margin-bottom:24px;">Your current game progress will be lost.</div>
+            <button class="btn btn-secondary" onclick="game.hideOverlay('overlay-quit')">CANCEL</button>
+            <button class="btn btn-danger" onclick="game.quitToHome()">QUIT</button>
+        </div>
+    </div>
+
+    <script>
+    // ========== GAME ENGINE ==========
+    const game = {
+        // State
+        currentLetter: 'A',
+        currentIndex: 0,
+        timeLimit: 15,
+        timeRemaining: 15,
+        score: 0,
+        correctInputs: 0,
+        wrongInputs: 0,
+        totalInputs: 0,
+        gameRunning: false,
+        gamePaused: false,
+        gameCompleted: false,
+        streak: 0,
+        bestStreak: 0,
+        timerInterval: null,
+        startTime: null,
+        audioCtx: null,
+
+        // Letters
+        letters: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split(''),
+
+        // Settings
+        settings: {
+            sound: true,
+            vibration: true,
+            autofocus: true
+        },
+
+        // Stats
+        stats: {
+            gamesPlayed: 0,
+            gamesWon: 0,
+            gamesLost: 0,
+            bestScore: 0,
+            fastestTime: null,
+            bestAccuracy: 0,
+            totalTime: 0,
+            totalWins: 0,
+            instagramGate: false
+        },
+
+        init() {
+            this.loadData();
+            this.setupEventListeners();
+            this.updateSettingsUI();
+
+            // Splash screen delay
+            setTimeout(() => {
+                if (this.stats.instagramGate) {
+                    this.showScreen('home');
+                } else {
+                    this.showScreen('instagram');
+                }
+            }, 2200);
+        },
+
+        loadData() {
+            try {
+                const saved = localStorage.getItem('azTypingGame');
+                if (saved) {
+                    const data = JSON.parse(saved);
+                    if (data.stats) this.stats = { ...this.stats, ...data.stats };
+                    if (data.settings) this.settings = { ...this.settings, ...data.settings };
+                    if (data.timeLimit) this.timeLimit = data.timeLimit;
+                }
+            } catch(e) { console.log('No saved data'); }
+        },
+
+        saveData() {
+            try {
+                localStorage.setItem('azTypingGame', JSON.stringify({
+                    stats: this.stats,
+                    settings: this.settings,
+                    timeLimit: this.timeLimit
+                }));
+            } catch(e) { console.log('Save failed'); }
+        },
+
+        showScreen(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById('screen-' + id).classList.add('active');
+
+            if (id === 'stats') this.updateStatsUI();
+            if (id === 'settings') this.updateSettingsUI();
+
+            // Auto focus input on game screen
+            if (id === 'game' && this.settings.autofocus) {
+                setTimeout(() => {
+                    const input = document.getElementById('game-input');
+                    if (input) input.focus();
+                }, 100);
+            }
+        },
+
+        instagramOpened() {
+            this.stats.instagramGate = true;
+            this.saveData();
+        },
+
+        instagramFollowed() {
+            this.stats.instagramGate = true;
+            this.saveData();
+            this.showScreen('home');
+        },
+
+        setupEventListeners() {
+            // Time preset buttons
+            document.querySelectorAll('#time-presets .btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('#time-presets .btn').forEach(b => b.classList.remove('selected'));
+                    btn.classList.add('selected');
+                    this.timeLimit = parseInt(btn.dataset.time);
+                    document.getElementById('custom-time').value = '';
+                });
+            });
+
+            // Custom time input
+            document.getElementById('custom-time').addEventListener('input', (e) => {
+                const val = parseInt(e.target.value);
+                if (val && val > 0) {
+                    this.timeLimit = val;
+                    document.querySelectorAll('#time-presets .btn').forEach(b => b.classList.remove('selected'));
+                }
+            });
+
+            // Keyboard input for desktop
+            document.addEventListener('keydown', (e) => {
+                if (!this.gameRunning || this.gamePaused) return;
+                if (e.key.length === 1 && e.key.match(/[a-zA-Z]/)) {
+                    e.preventDefault();
+                    this.processInput(e.key.toUpperCase());
+                }
+            });
+
+            // Mobile input
+            const mobileInput = document.getElementById('game-input');
+            mobileInput.addEventListener('input', (e) => {
+                if (!this.gameRunning || this.gamePaused) {
+                    e.target.value = '';
+                    return;
+                }
+                const val = e.target.value.toUpperCase();
+                if (val.length > 0) {
+                    this.processInput(val[val.length - 1]);
+                    e.target.value = '';
+                }
+            });
+
+            // Prevent paste
+            mobileInput.addEventListener('paste', (e) => {
+                e.preventDefault();
+                this.showMessage('Pasting is not allowed!', 'error');
+            });
+
+            // Keep focus
+            mobileInput.addEventListener('blur', () => {
+                if (this.gameRunning && !this.gamePaused && this.settings.autofocus) {
+                    setTimeout(() => mobileInput.focus(), 100);
+                }
+            });
+        },
+
+        startCountdown() {
+            if (!this.timeLimit || this.timeLimit < 1) {
+                this.timeLimit = 15;
+            }
+            this.showScreen('countdown');
+            let count = 3;
+            const el = document.getElementById('countdown-number');
+            el.textContent = count;
+            el.style.animation = 'none';
+            void el.offsetWidth;
+            el.style.animation = 'countdownPop 0.8s ease';
+
+            const interval = setInterval(() => {
+                count--;
+                if (count > 0) {
+                    el.textContent = count;
+                    el.style.animation = 'none';
+                    void el.offsetWidth;
+                    el.style.animation = 'countdownPop 0.8s ease';
+                    this.playSound('tick');
+                } else if (count === 0) {
+                    el.textContent = 'GO!';
+                    el.style.color = 'var(--success)';
+                    this.playSound('go');
+                } else {
+                    clearInterval(interval);
+                    this.startGame();
+                }
+            }, 800);
+        },
+
+        startGame() {
+            this.currentIndex = 0;
+            this.currentLetter = this.letters[0];
+            this.timeRemaining = this.timeLimit;
+            this.score = 0;
+            this.correctInputs = 0;
+            this.wrongInputs = 0;
+            this.totalInputs = 0;
+            this.streak = 0;
+            this.bestStreak = 0;
+            this.gameRunning = true;
+            this.gamePaused = false;
+            this.gameCompleted = false;
+            this.startTime = Date.now();
+
+            this.updateGameUI();
+            this.showScreen('game');
+            this.startTimer();
+
+            const input = document.getElementById('game-input');
+            input.value = '';
+            if (this.settings.autofocus) input.focus();
+
+            this.saveData();
+        },
+
+        startTimer() {
+            if (this.timerInterval) clearInterval(this.timerInterval);
+            this.timerInterval = setInterval(() => {
+                if (this.gamePaused) return;
+                this.timeRemaining -= 0.1;
+                if (this.timeRemaining <= 0) {
+                    this.timeRemaining = 0;
+                    this.gameOver();
+                }
+                this.updateTimerUI();
+            }, 100);
+        },
+
+        updateTimerUI() {
+            const el = document.getElementById('game-timer');
+            const secs = Math.ceil(this.timeRemaining);
+            const mins = Math.floor(secs / 60);
+            const rem = secs % 60;
+            el.textContent = `${mins.toString().padStart(2,'0')}:${rem.toString().padStart(2,'0')}`;
+
+            el.classList.remove('warning', 'danger');
+            if (this.timeRemaining <= 3) {
+                el.classList.add('danger');
+            } else if (this.timeRemaining <= 5) {
+                el.classList.add('warning');
+            }
+        },
+
+        updateGameUI() {
+            document.getElementById('current-letter').textContent = this.currentLetter;
+            document.getElementById('game-progress').textContent = `${this.currentIndex}/26`;
+            document.getElementById('game-score').textContent = this.score;
+            document.getElementById('progress-bar').style.width = `${(this.currentIndex / 26) * 100}%`;
+
+            const streakEl = document.getElementById('streak-display');
+            if (this.streak > 2) {
+                streakEl.textContent = `🔥 Streak: ${this.streak}`;
+                streakEl.classList.add('active');
+            } else {
+                streakEl.classList.remove('active');
+            }
+        },
+
+        processInput(input) {
+            if (!this.gameRunning || this.gamePaused) return;
+
+            this.totalInputs++;
+
+            if (input === this.currentLetter) {
+                // Correct
+                this.correctInputs++;
+                this.streak++;
+                if (this.streak > this.bestStreak) this.bestStreak = this.streak;
+
+                this.score += 10;
+                this.currentIndex++;
+
+                this.playSound('correct');
+                this.vibrate(20);
+                this.spawnParticles();
+
+                const letterEl = document.getElementById('current-letter');
+                letterEl.classList.remove('wrong');
+                letterEl.classList.add('correct');
+                setTimeout(() => letterEl.classList.remove('correct'), 400);
+
+                if (this.currentIndex >= 26) {
+                    this.gameWin();
+                } else {
+                    this.currentLetter = this.letters[this.currentIndex];
+                    this.updateGameUI();
+                }
+            } else {
+                // Wrong
+                this.wrongInputs++;
+                this.streak = 0;
+
+                this.playSound('wrong');
+                this.vibrate([50, 30, 50]);
+
+                const letterEl = document.getElementById('current-letter');
+                letterEl.classList.remove('correct');
+                letterEl.classList.add('wrong');
+                setTimeout(() => letterEl.classList.remove('wrong'), 400);
+
+                this.showMessage(`Wrong! Try ${this.currentLetter}`, 'error');
+                this.updateGameUI();
+            }
+        },
+
+        showMessage(text, type) {
+            const el = document.getElementById('game-message');
+            el.textContent = text;
+            el.className = 'message ' + type;
+            el.style.display = 'block';
+            setTimeout(() => { el.style.display = 'none'; }, 1500);
+        },
+
+        spawnParticles() {
+            const letterEl = document.getElementById('current-letter');
+            const rect = letterEl.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+
+            for (let i = 0; i < 8; i++) {
+                const p = document.createElement('div');
+                p.className = 'particle';
+                const size = Math.random() * 8 + 4;
+                p.style.width = size + 'px';
+                p.style.height = size + 'px';
+                p.style.background = `hsl(${Math.random() * 60 + 160}, 100%, 60%)`;
+                p.style.left = centerX + 'px';
+                p.style.top = centerY + 'px';
+                p.style.setProperty('--tx', (Math.random() - 0.5) * 200 + 'px');
+                p.style.setProperty('--ty', (Math.random() - 0.5) * 200 + 'px');
+                document.body.appendChild(p);
+                setTimeout(() => p.remove(), 1000);
+            }
+        },
+
+        pauseGame() {
+            if (!this.gameRunning) return;
+            this.gamePaused = true;
+            document.getElementById('overlay-pause').classList.add('active');
+        },
+
+        resumeGame() {
+            this.gamePaused = false;
+            document.getElementById('overlay-pause').classList.remove('active');
+            const input = document.getElementById('game-input');
+            if (this.settings.autofocus) input.focus();
+        },
+
+        confirmQuit() {
+            this.gamePaused = true;
+            document.getElementById('overlay-quit').classList.add('active');
+        },
+
+        hideOverlay(id) {
+            document.getElementById(id).classList.remove('active');
+            if (id === 'overlay-quit') {
+                this.gamePaused = false;
+                const input = document.getElementById('game-input');
+                if (this.settings.autofocus) input.focus();
+            }
+        },
+
+        quitToHome() {
+            this.gameRunning = false;
+            this.gamePaused = false;
+            if (this.timerInterval) clearInterval(this.timerInterval);
+            document.getElementById('overlay-pause').classList.remove('active');
+            document.getElementById('overlay-quit').classList.remove('active');
+            this.showScreen('home');
+        },
+
+        gameWin() {
+            this.gameRunning = false;
+            this.gameCompleted = true;
+            if (this.timerInterval) clearInterval(this.timerInterval);
+
+            const timeUsed = (Date.now() - this.startTime) / 1000;
+            const timeRemaining = this.timeRemaining;
+            const accuracy = this.totalInputs > 0 ? ((this.correctInputs / this.totalInputs) * 100).toFixed(1) : 100;
+
+            // Speed bonus
+            let bonus = 0;
+            if (timeUsed < 10) bonus = 100;
+            else if (timeUsed < 20) bonus = 50;
+            else if (timeUsed < 30) bonus = 25;
+
+            this.score += bonus;
+
+            // Update stats
+            this.stats.gamesPlayed++;
+            this.stats.gamesWon++;
+            this.stats.totalTime += timeUsed;
+            this.stats.totalWins++;
+
+            let isNewBest = false;
+            if (this.score > this.stats.bestScore) {
+                this.stats.bestScore = this.score;
+                isNewBest = true;
+            }
+            if (this.stats.fastestTime === null || timeUsed < this.stats.fastestTime) {
+                this.stats.fastestTime = timeUsed;
+                isNewBest = true;
+            }
+            const accNum = parseFloat(accuracy);
+            if (accNum > this.stats.bestAccuracy) {
+                this.stats.bestAccuracy = accNum;
+            }
+
+            this.saveData();
+            this.playSound('win');
+            this.vibrate([30, 50, 30, 50, 100]);
+
+            // Update victory UI
+            document.getElementById('victory-time').textContent = timeUsed.toFixed(2) + 's';
+            document.getElementById('victory-remaining').textContent = timeRemaining.toFixed(1) + 's';
+            document.getElementById('victory-score').textContent = this.score;
+            document.getElementById('victory-accuracy').textContent = accuracy + '%';
+            document.getElementById('best-badge').style.display = isNewBest ? 'block' : 'none';
+
+            this.showScreen('victory');
+        },
+
+        gameOver() {
+            this.gameRunning = false;
+            if (this.timerInterval) clearInterval(this.timerInterval);
+
+            const accuracy = this.totalInputs > 0 ? ((this.correctInputs / this.totalInputs) * 100).toFixed(1) : 0;
+
+            // Update stats
+            this.stats.gamesPlayed++;
+            this.stats.gamesLost++;
+
+            this.saveData();
+            this.playSound('lose');
+            this.vibrate([100, 50, 100, 50, 200]);
+
+            // Update game over UI
+            document.getElementById('go-progress').textContent = `${this.currentIndex}/26`;
+            document.getElementById('go-score').textContent = this.score;
+            document.getElementById('go-accuracy').textContent = accuracy + '%';
+            document.getElementById('go-streak').textContent = this.bestStreak;
+
+            this.showScreen('gameover');
+        },
+
+        restartGame() {
+            this.startCountdown();
+        },
+
+        shareResult() {
+            const timeUsed = (this.timeLimit - this.timeRemaining).toFixed(2);
+            const text = `I completed the A-Z Typing Challenge in ${timeUsed} seconds! Score: ${this.score} Can you beat me?`;
+
+            if (navigator.share) {
+                navigator.share({ title: 'A-Z Typing Challenge', text: text });
+            } else {
+                navigator.clipboard.writeText(text).then(() => {
+                    alert('Result copied to clipboard!');
+                }).catch(() => {
+                    alert(text);
+                });
+            }
+        },
+
+        updateStatsUI() {
+            const s = this.stats;
+            document.getElementById('stat-played').textContent = s.gamesPlayed;
+            document.getElementById('stat-won').textContent = s.gamesWon;
+            document.getElementById('stat-lost').textContent = s.gamesLost;
+
+            const winRate = s.gamesPlayed > 0 ? ((s.gamesWon / s.gamesPlayed) * 100).toFixed(1) : 0;
+            document.getElementById('stat-winrate').textContent = winRate + '%';
+            document.getElementById('stat-best').textContent = s.bestScore;
+            document.getElementById('stat-fastest').textContent = s.fastestTime !== null ? s.fastestTime.toFixed(2) + 's' : '—';
+            document.getElementById('stat-accuracy').textContent = s.bestAccuracy.toFixed(1) + '%';
+
+            const avgTime = s.totalWins > 0 ? (s.totalTime / s.totalWins).toFixed(2) + 's' : '—';
+            document.getElementById('stat-avg').textContent = avgTime;
+        },
+
+        toggleSetting(key) {
+            this.settings[key] = !this.settings[key];
+            this.updateSettingsUI();
+            this.saveData();
+        },
+
+        updateSettingsUI() {
+            document.getElementById('toggle-sound').classList.toggle('active', this.settings.sound);
+            document.getElementById('toggle-vibration').classList.toggle('active', this.settings.vibration);
+            document.getElementById('toggle-autofocus').classList.toggle('active', this.settings.autofocus);
+        },
+
+        resetStats() {
+            if (!confirm('Are you sure you want to reset all statistics?')) return;
+            this.stats.gamesPlayed = 0;
+            this.stats.gamesWon = 0;
+            this.stats.gamesLost = 0;
+            this.stats.bestScore = 0;
+            this.stats.fastestTime = null;
+            this.stats.bestAccuracy = 0;
+            this.stats.totalTime = 0;
+            this.stats.totalWins = 0;
+            this.saveData();
+            this.updateStatsUI();
+            alert('Statistics reset!');
+        },
+
+        resetAll() {
+            if (!confirm('Are you sure you want to reset ALL data including settings?')) return;
+            localStorage.removeItem('azTypingGame');
+            location.reload();
+        },
+
+        // Audio System
+        playSound(type) {
+            if (!this.settings.sound) return;
+            try {
+                if (!this.audioCtx) this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const ctx = this.audioCtx;
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+
+                switch(type) {
+                    case 'correct':
+                        osc.frequency.setValueAtTime(880, ctx.currentTime);
+                        osc.frequency.exponentialRampToValueAtTime(1760, ctx.currentTime + 0.1);
+                        gain.gain.setValueAtTime(0.15, ctx.currentTime);
+                        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.15);
+                        osc.start(ctx.currentTime);
+                        osc.stop(ctx.currentTime + 0.15);
+                        break;
+                    case 'wrong':
+                        osc.frequency.setValueAtTime(200, ctx.currentTime);
+                        osc.frequency.exponentialRampToValueAtTime(100, ctx.currentTime + 0.2);
+                        gain.gain.setValueAtTime(0.15, ctx.currentTime);
+                        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.2);
+                        osc.start(ctx.currentTime);
+                        osc.stop(ctx.currentTime + 0.2);
+                        break;
+                    case 'tick':
+                        osc.frequency.setValueAtTime(1200, ctx.currentTime);
+                        gain.gain.setValueAtTime(0.1, ctx.currentTime);
+                        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.08);
+                        osc.start(ctx.currentTime);
+                        osc.stop(ctx.currentTime + 0.08);
+                        break;
+                    case 'go':
+                        osc.frequency.setValueAtTime(523, ctx.currentTime);
+                        osc.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+                        osc.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+                        gain.gain.setValueAtTime(0.15, ctx.currentTime);
+                        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.4);
+                        osc.start(ctx.currentTime);
+                        osc.stop(ctx.currentTime + 0.4);
+                        break;
+                    case 'win':
+                        [523, 659, 784, 1047].forEach((freq, i) => {
+                            const o = ctx.createOscillator();
+                            const g = ctx.createGain();
+                            o.connect(g);
+                            g.connect(ctx.destination);
+                            o.frequency.setValueAtTime(freq, ctx.currentTime + i * 0.12);
+                            g.gain.setValueAtTime(0.12, ctx.currentTime + i * 0.12);
+                            g.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + i * 0.12 + 0.3);
+                            o.start(ctx.currentTime + i * 0.12);
+                            o.stop(ctx.currentTime + i * 0.12 + 0.3);
+                        });
+                        break;
+                    case 'lose':
+                        [400, 350, 300, 200].forEach((freq, i) => {
+                            const o = ctx.createOscillator();
+                            const g = ctx.createGain();
+                            o.connect(g);
+                            g.connect(ctx.destination);
+                            o.frequency.setValueAtTime(freq, ctx.currentTime + i * 0.15);
+                            g.gain.setValueAtTime(0.12, ctx.currentTime + i * 0.15);
+                            g.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + i * 0.15 + 0.3);
+                            o.start(ctx.currentTime + i * 0.15);
+                            o.stop(ctx.currentTime + i * 0.15 + 0.3);
+                        });
+                        break;
+                }
+            } catch(e) { console.log('Audio error'); }
+        },
+
+        vibrate(pattern) {
+            if (this.settings.vibration && navigator.vibrate) {
+                navigator.vibrate(pattern);
+            }
+        }
+    };
+
+    // Initialize on load
+    window.addEventListener('DOMContentLoaded', () => {
+        game.init();
+    });
+    </script>
+</body>
+</html>
